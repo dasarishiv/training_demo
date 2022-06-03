@@ -1,5 +1,6 @@
 # Some **basic** about md
-
+**cheat sheet**\
+https://towardsdatascience.com/the-ultimate-markdown-cheat-sheet-3d3976b31a0
 
 ```
 ** 2 star is used for to make bold text

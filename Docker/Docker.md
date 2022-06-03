@@ -147,13 +147,9 @@ apt command is ubonto based package manager
 \
 \
 
-# Need to remove below line
-we are in `Design Principles and Refactoring `
 
-\
-\
-\
-\
+
+
 
 
 ## go inside the container to makedo some operations
@@ -199,3 +195,217 @@ docker container stop 1d
 docker container rm 1d
 docker container diff 1d
 ```
+# `To remove all container`
+
+```
+docker container rm -f ${docker container ls -aq}
+```
+
+
+# Docker file
+
+## some vi commands
+```
+vi <filename>
+vi Dockerfile
+
+To Exit:
+:x => quit vi
+:wq => quit vi and save
+:q => quit vi
+:q! => quit without save
+
+i => to inset text
+
+Esc
+:wq
+
+```
+
+
+
+```
+vi Dockerfile
+```
+`<instruction> <commands>`
+```
+FORM ubuntu
+```
+
+build the image from docker file\
+`docker image build -t <image tagname> <Dockerfile location>`
+```
+docker image build -t myapp .
+
+docker images
+docker image ls
+```
+
+```
+vi Dockerfile
+FORM ubuntu
+LABEL env="prod"
+
+save and quit
+docker image build -t myapp .
+```
+### Image inspect
+`docker image inspect <image name>`
+```
+docker image inspect myapp
+```
+
+
+```
+vi Dockerfile
+FORM ubuntu
+LABEL env="prod"
+RUN apt update -y && apt install git -y
+ENV user admin
+ENV pass secret
+WORKDIR /app
+#COPY a.txt . # source <distination>
+#ADD demo . #directoryname <distination>
+
+# create tar file
+tar cvf demo.tar demo/
+ls
+# ADD will copy and extracted also
+# ADD also used to download file from network location and placed in container folder
+ADD demo.tar . 
+
+
+# switch user from root
+
+RUN useradd test #create the user
+USER test # switch to test user
+
+# note:: CMD and ENTRYPOINT command line will run when container start, not on container build time
+
+#CMD ["sh"] #overwrite cmd command with console command
+ENTRYPOINT ["sh"] # it will append the command with input command like docker container run -itd myapp ping google.com
+
+
+
+
+save and quit
+docker image build -t myapp .
+```
+
+## Build Docker file for nginx Server with custom index file
+
+```
+vi Dockerfile
+
+FROM amazonlinux
+RUN yum update -y && amazon-linux-extras install nginx1 -y
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
+Esc
+:wq or :x
+```
+```
+
+docker image build -t mynginx .
+
+docker container run -p 8080:80 -itd mynginx
+```
+`let custmize index.html`
+
+```
+vi index.html
+
+<h1>Hello From Nginx!</h1>
+
+Esc
+:x
+```
+```
+vi Dockerfile
+
+FROM amazonlinux
+RUN yum update -y && amazon-linux-extras install nginx1 -y
+COPY index.html /usr/share/nginx/html/
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
+Esc
+:wq or :x
+```
+
+
+
+# Need to remove below line
+we are in `Using Automation Code Developed and Pushed in CI/CD Session 1`
+
+# Docker Network
+
+```
+docker network ls
+```
+
+## `create network`
+`docker network create <networkName> -d <network driver bridge(default)/overlay>`
+
+```
+docker network ls
+docker network create test -d bridge
+```
+
+### `network inspect`
+`docker network inspect <network name>`\
+`docker container inspect <container name>`\
+
+```
+docker network inspect test
+
+docker container run --name custom1 --network test -itd ubuntu
+docker container run --name custom2 --network test -itd ubuntu
+docker network inspect test
+docker container ls
+docker container inspect 24|grep IPAdd
+docker container exec -it 24 bash
+apt update -y
+apt install -y iputils-ping
+```
+
+
+
+`kube.docx`
+
+# Kubernates
+
+## minikube instalation
+`minikube https://minikube.sigs.k8s.io/docs/start/`
+
+```
+curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+sudo install minikube-linux-amd64 /usr/local/bin/minikube
+
+minikube start --driver=docker # from driver page
+```
+
+## kuberneties (cli kubectl) Installation
+ `https://kubernetes.io/docs/tasks/tools/`
+ ```
+ curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+
+ sudo chmod +x kubectl
+
+ sudo mv kubectl /usr/bin/    # to add in path
+ ```
+
+```
+kubectl get node
+kubectl get pod
+
+ls -lart # to see the hidden directry
+
+cd .kube
+ls
+cat config
+
+# .kube folder location in mac
+/Users/<USERNAME>/.kube/config
+```
+
+![image text](k8b_arch.png "Arch")
